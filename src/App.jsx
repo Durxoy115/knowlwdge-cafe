@@ -1,24 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Blogs from './components/Blogs/Blogs';
 import Bookmarks from './components/Bookmarks/Bookmarks';
 import Headers from './components/Hearder/Headers';
+import { getLocalStorage, setLocalStorage } from './utils/localstorage';
 
 function App() {
-  const [bookMarks, setBookMarks] = useState([]);
-  const [totalReadingTime, setTotalReadingTime] = useState(0);
+  const [bookMarks, setBookMarks] = useState(() => getLocalStorage('bookmarks', []));
+  const [totalReadingTime, setTotalReadingTime] = useState(() => getLocalStorage('readingTime', 0));
+
+  useEffect(() => {
+    setLocalStorage('bookmarks', bookMarks);
+  }, [bookMarks]);
+
+  useEffect(() => {
+    setLocalStorage('readingTime', totalReadingTime);
+  }, [totalReadingTime]);
 
   const handleBookMark = (blog) => {
     const isAlreadyBookmarked = bookMarks.some((b) => b.id === blog.id);
     if (!isAlreadyBookmarked) {
-      setBookMarks([...bookMarks, blog]); // Add to bookmarks
+      setBookMarks([...bookMarks, blog]);
     } else {
-      setBookMarks(bookMarks.filter((b) => b.id !== blog.id)); // Remove from bookmarks
+      setBookMarks(bookMarks.filter((b) => b.id !== blog.id));
     }
   };
 
   const handleReadingTime = (time) => {
-    setTotalReadingTime((prevTime) => prevTime + time); // Increase total reading time
+    setTotalReadingTime(totalReadingTime + time);
   };
 
   return (
