@@ -1,35 +1,31 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Blogs from './components/Blogs/Blogs'
+import Bookmarks from './components/Bookmarks/Bookmarks'
+import Headers from './components/Hearder/Headers'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [bookMarks, setBookMarks] = useState([]);
+
+  const handleBookMark = (blog) => {
+      const isAlreadyBookmarked = bookMarks.some((b) => b.id === blog.id);
+      if (!isAlreadyBookmarked) {
+          setBookMarks([...bookMarks, blog]); // Add to bookmarks
+      } else {
+          setBookMarks(bookMarks.filter((b) => b.id !== blog.id)); // Remove from bookmarks
+      }
+  };
 
   return (
-    <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+          <Headers />
+          <div className="md:flex max-w-7xl mx-auto">
+              <Blogs bookMarks={bookMarks} handleBookMark={handleBookMark} />
+              <Bookmarks bookmarks={bookMarks} />
+          </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;
+
